@@ -173,6 +173,8 @@ export interface Blog {
   title: string;
   slug: string;
   thumbnail: string | Media;
+  author: string;
+  description: string;
   body: {
     root: {
       type: string;
@@ -318,6 +320,8 @@ export interface BlogsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   thumbnail?: T;
+  author?: T;
+  description?: T;
   body?: T;
   createdAt?: T;
   updatedAt?: T;
