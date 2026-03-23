@@ -27,16 +27,16 @@ export default async function HomePage() {
             width={65}
           />
         </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
+        {!user && <h1>Welcome to your My New Project.</h1>}
         {user && <h1>Welcome back, {user.email}</h1>}
         <div className="links">
           <a
-            className="admin"
-            href={payloadConfig.routes.admin}
+            className="media"
+            href={`${payloadConfig.routes.admin}/collections/media`}
             rel="noopener noreferrer"
             target="_blank"
           >
-            Go to admin panel
+            Go to media panel
           </a>
           <a
             className="docs"
