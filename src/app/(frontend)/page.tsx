@@ -4,24 +4,45 @@ import config from '@/payload.config'
 import './styles.css'
 import Link from 'next/link'
 import Image from 'next/image'
+import SearchBar from '@/components/SearchBar'
+import SortFilter from '@/components/SortFilter'
+import Pagination from '@/components/Pagination'
 export const dynamic = 'force-dynamic'
 
-export default async function HomePage() {
+export default async function HomePage({searchParams}:{searchParams:{sort?:string,search?:string,page?:string}}) {
+  
   const payload = await getPayload({ config })
-
-  const { docs: posts } = await payload.find({
+  const {sort:sortParam,search:searchParam,page:pageParam}=await searchParams
+  const sort = sortParam ?? 'newest'
+  const search = searchParam ?? ''
+  const page=Number(pageParam) || 1
+  const { docs: posts ,totalPages} = await payload.find({
     collection: 'blogs',
-    limit: 6,
-    sort: '-createdAt',
+    limit: 4,
     depth: 1,
+    page:page,
+    sort:
+      sort === 'oldest'? 'createdAt'
+        : sort === 'az'? 'title'
+        : sort === 'za' ? '-title'
+        : '-createdAt',
+    where: {
+      ...(search && {
+        title: { contains: search },
+      }),
+    },
   })
 
   return (
     <main className="max-w-8xl mx-auto px-6 md:px-12 lg:px-16 py-16">  {/* 👈 added this */}
       
       <h1 className="text-5xl font-bold mb-12 text-left">Latest Posts</h1>
+      <div className="flex items-center gap-3 mb-8 ">
+        <SearchBar />
+        <SortFilter/>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         {posts.map((post) => (
           <Link
             key={post.id}
@@ -78,6 +99,7 @@ export default async function HomePage() {
           </Link>
         ))}
       </div>
+      <Pagination currentPage={page} totalPages={totalPages}/>
     </main>
   )
 }
