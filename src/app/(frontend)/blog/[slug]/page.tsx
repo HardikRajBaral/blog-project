@@ -48,39 +48,45 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
         {/* Left — Main Blog Content */}
         <div className="flex-1 min-w-0">
+          <div className="flex  items-end gap-12">
+            <div className=' w-1/2'>
+                    {/* Thumbnail */}
+              {post.thumbnail && typeof post.thumbnail === 'object' && (
+                <Image
+                  src={post.thumbnail.url!}
+                  alt={post.title}
+                  width={800}
+                  height={400}
+                  className="rounded-xl content-cover w-full mb-8"
+                />
+              )}
+            </div>
 
-          {/* Thumbnail */}
-          {post.thumbnail && typeof post.thumbnail === 'object' && (
-            <Image
-              src={post.thumbnail.url!}
-              alt={post.title}
-              width={800}
-              height={400}
-              className="rounded-xl object-cover w-full mb-8"
-            />
-          )}
+            <div className='w-1/2'>
+                {/* Title */}
+              <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
 
-          {/* Title */}
-          <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
+              {/* Author */}
+              {post.author && (
+                <h3 className="text-sm text-gray-500 mb-2">{post.author}</h3>
+              )}
 
-          {/* Author */}
-          {post.author && (
-            <h3 className="text-sm text-gray-500 mb-2">{post.author}</h3>
-          )}
+              {/* Description */}
+              {post.description && (
+                <p className="text-sm text-gray-500 mb-4">{post.description}</p>
+              )}
 
-          {/* Description */}
-          {post.description && (
-            <p className="text-sm text-gray-500 mb-4">{post.description}</p>
-          )}
+              {/* Date */}
+              <p className="text-sm text-gray-400 mb-8 border-b pb-4">
+                {new Date(post.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+            </div>
 
-          {/* Date */}
-          <p className="text-sm text-gray-400 mb-8 border-b pb-4">
-            {new Date(post.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
+          </div>
 
           {/* Body */}
           <article className="prose prose-lg max-w-none">

@@ -8,7 +8,6 @@ export default async function BlogPage() {
 
   const { docs: posts } = await payload.find({
     collection: 'blogs',
-    limit: 5,
     sort: '-createdAt',
     depth: 1,
   })

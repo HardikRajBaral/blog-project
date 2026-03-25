@@ -10,7 +10,7 @@ export default async function HomePage() {
 
   const { docs: posts } = await payload.find({
     collection: 'blogs',
-    limit: 5,
+    limit: 6,
     sort: '-createdAt',
     depth: 1,
   })
