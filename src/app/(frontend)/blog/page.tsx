@@ -19,13 +19,10 @@ export default async function BlogPage({
   const { docs: posts } = await payload.find({
     collection: 'blogs',
     sort:
-      sort === 'oldest'
-        ? 'createdAt'
-        : sort === 'az'
-          ? 'title'
-          : sort === 'za'
-            ? '-title'
-            : '-createdAt',
+      sort === 'oldest'? 'createdAt'
+        : sort === 'az'? 'title'
+        : sort === 'za' ? '-title'
+        : '-createdAt',
     where: {
       ...(search && {
         title: { contains: search },
