@@ -2,22 +2,46 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import Link from 'next/link'
 import Image from 'next/image'
+import SortFilter from '@/components/SortFilter'
+import SearchBar from '@/components/SearchBar'
 
 export const dynamic = 'force-dynamic'
-export default async function BlogPage() {
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: { sort?: string; search?: string }
+}) {
   const payload = await getPayload({ config })
+  const { sort: sortParam, search: searchParam } = await searchParams
 
+  const sort = sortParam ?? 'newest'
+  const search = searchParam ?? ''
   const { docs: posts } = await payload.find({
     collection: 'blogs',
-    sort: '-createdAt',
+    sort:
+      sort === 'oldest'
+        ? 'createdAt'
+        : sort === 'az'
+          ? 'title'
+          : sort === 'za'
+            ? '-title'
+            : '-createdAt',
+    where: {
+      ...(search && {
+        title: { contains: search },
+      }),
+    },
     depth: 1,
   })
 
   return (
     <main className="max-w-8xl mx-auto px-6 md:px-12 lg:px-16 py-16">
-      
       {/* Heading */}
       <h1 className="text-5xl font-bold mb-12 text-left">All Posts</h1>
+      <div className=" flex items-center gap-3 mb-8 ">
+        <SearchBar />
+        <SortFilter />
+      </div>
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -46,18 +70,15 @@ export default async function BlogPage() {
 
             {/* Card Content */}
             <div className="flex flex-col flex-1 p-6 gap-4">
-
               {/* Title */}
               <h2 className="text-xl font-bold group-hover:text-blue-600 transition-colors duration-200">
                 {post.title}
               </h2>
               {/* Description */}
               {post.description && (
-                <p className="text-sm text-gray-500 flex-1">
-                  {post.description}
-                </p>
+                <p className="text-sm text-gray-500 flex-1">{post.description}</p>
               )}
-              <h3 className='text-sm text-gray-500'>{post.author}</h3>
+              <h3 className="text-sm text-gray-500">{post.author}</h3>
 
               {/* Spacer */}
               <div className="flex-1" />
@@ -78,7 +99,6 @@ export default async function BlogPage() {
                   Read more →
                 </span>
               </div>
-
             </div>
           </Link>
         ))}
